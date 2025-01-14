@@ -79,7 +79,7 @@ class MazeGenerator:
 width = 31 #Mettre des nombres impaires
 height = 41 #Mettre des nombres impaires
 # (Parce que ça fait 3141 : 3,141)
-maze = Maze(width, height)
+maze = MazeGenerator(width, height)
 
 maze.generate()
 maze.display()
