@@ -1,6 +1,6 @@
 import random 
 
-class Maze:
+class MazeGenerator:
     """
     Génère un labyrinthe complet, avec un départ et une arrivée
     """
@@ -8,6 +8,10 @@ class Maze:
         """
         Génère matrice de mur
         """
+        if width % 2 == 0: #Avoir une longueur impaire
+            width += 1
+        if height % 2 == 0: #Avoir une hauteur impaire
+            height += 1
         self.width = width #longeur du laby
         self.height = height #hauteur du laby
         self.maze = [['#' for _ in range(width)] for _ in range(height)]
@@ -33,7 +37,7 @@ class Maze:
 
             for dx, dy in directions:
                 nx, ny = x + dx, y + dy
-                if 1 <= nx < self.width - 1 and 1 <= ny < self.height - 1 #Sécurité pour vérif qu'on est bien dans les bordures et que c bien un mur
+                if 1 <= nx < self.width - 1 and 1 <= ny < self.height - 1: #Sécurité pour vérif qu'on est bien dans les bordures et que c bien un mur
                     if self.maze[ny][nx] == '#': 
                         neighbors.append((nx, ny))
 
