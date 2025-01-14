@@ -1,10 +1,11 @@
 import random 
+from typing import List, Tuple
 
 class MazeGenerator:
     """
     Génère un labyrinthe complet, avec un départ et une arrivée
     """
-    def __init__(self, width, height):
+    def __init__(self, width: int, height; int) -> None:
         """
         Génère matrice de mur
         """
@@ -12,28 +13,28 @@ class MazeGenerator:
             width += 1
         if height % 2 == 0: #Avoir une hauteur impaire
             height += 1
-        self.width = width #longeur du laby
-        self.height = height #hauteur du laby
-        self.maze = [['#' for _ in range(width)] for _ in range(height)]
+        self.width: int = width #longeur du laby
+        self.height: int = height #hauteur du laby
+        self.maze: List[List[str]] = [['#' for _ in range(width)] for _ in range(height)]
 
-    def generate(self): #Pour faire le laby
+    def generate(self) -> None: #Pour faire le laby
         """
         Placer le départ (D)
         """
-        start_x = random.randrange(1, self.width - 1, 2) # 2 pour s'assurer qu'il ne tombe pas sur un bord
-        start_y = random.randrange(1, self.height - 1, 2) # 2 pour s'assurer qu'il ne tombe pas sur un bord
+        start_x: int = random.randrange(1, self.width - 1, 2) # 2 pour s'assurer qu'il ne tombe pas sur un bord
+        start_y: int = random.randrange(1, self.height - 1, 2) # 2 pour s'assurer qu'il ne tombe pas sur un bord
         self.maze[start_y][start_x] = 'D' #Place le départ (D) sur le laby
 
-        to_explore = [(start_x, start_y)] # Initialisation (nan c pas une récurrence...) pour générer un laby faisable
+        to_explore: List[Tuple[int, int]] = [(start_x, start_y)] # Initialisation (nan c pas une récurrence...) pour générer un laby faisable
 
         """
         Générer le laby
         """
         while to_explore:
             x, y = to_explore[-1] #Prend la dernière cellule
-            neighbors = [] #On va lister les neighbors de cette cellule dans... une liste
+            neighbors: List[Tuple[int, int]] = [] #On va lister les neighbors de cette cellule dans... une liste
             #On défini les directions possibles pour les neighbors (haut, bas, gauche, droite)
-            directions = [(-2, 0), (2, 0), (0, -2), (0, 2)]
+            directions: List[Tuple[int]] = [(-2, 0), (2, 0), (0, -2), (0, 2)]
 
             for dx, dy in directions:
                 nx, ny = x + dx, y + dy
@@ -62,8 +63,8 @@ class MazeGenerator:
         """
         Mettre l'arrivée (A)
         """
-        end_x = random.randrange(1, self.width, 2)
-        end_y = random.randrange(1, self.height, 2)
+        end_x: int = random.randrange(1, self.width, 2)
+        end_y: int = random.randrange(1, self.height, 2)
         while self.maze[end_y][end_x] != ' ': #Pour ne pas avoir l'arrivée sur un mur, ca serait balo. Mais plutôt sur un des chemins qu'on a crée plus tôt
             end_x = random.randrange(1, self.width, 2)
             end_y = random.randrange(1, self.height, 2)
@@ -76,8 +77,8 @@ class MazeGenerator:
         for ligne in self.maze:
           print(''.join(ligne))
 
-width = 31 #Mettre des nombres impaires
-height = 41 #Mettre des nombres impaires
+width: int = 31 #Mettre des nombres impaires
+height: int = 41 #Mettre des nombres impaires
 # (Parce que ça fait 3141 : 3,141)
 maze = MazeGenerator(width, height)
 
