@@ -1,21 +1,30 @@
 import random 
 
 class Maze:
+    """
+    Génère un labyrinthe complet, avec un départ et une arrivée
+    """
     def __init__(self, width, height):
-        self.width = width #width du laby
-        self.height = height #height du laby
-        # Grille remplie de murs : sous forme de matrice
+        """
+        Génère matrice de mur
+        """
+        self.width = width #longeur du laby
+        self.height = height #hauteur du laby
         self.maze = [['#' for _ in range(width)] for _ in range(height)]
 
     def generate(self): #Pour faire le laby
-        #Placer le départ (D)
+        """
+        Placer le départ (D)
+        """
         start_x = random.randrange(1, self.width - 1, 2) # 2 pour s'assurer qu'il ne tombe pas sur un bord
         start_y = random.randrange(1, self.height - 1, 2) # 2 pour s'assurer qu'il ne tombe pas sur un bord
         self.maze[start_y][start_x] = 'D' #Place le départ (D) sur le laby
 
         to_explore = [(start_x, start_y)] # Initialisation (nan c pas une récurrence...) pour générer un laby faisable
 
-        #Générer le laby
+        """
+        Générer le laby
+        """
         while to_explore:
             x, y = to_explore[-1] #Prend la dernière cellule
             neighbors = [] #On va lister les neighbors de cette cellule dans... une liste
@@ -24,8 +33,9 @@ class Maze:
 
             for dx, dy in directions:
                 nx, ny = x + dx, y + dy
-                if 1 <= nx < self.width - 1 and 1 <= ny < self.height - 1 and self.maze[ny][nx] == '#': #Sécurité pour vérif qu'on est bien dans les bordures et que c bien un mur
-                    neighbors.append((nx, ny))
+                if 1 <= nx < self.width - 1 and 1 <= ny < self.height - 1 #Sécurité pour vérif qu'on est bien dans les bordures et que c bien un mur
+                    if self.maze[ny][nx] == '#': 
+                        neighbors.append((nx, ny))
 
             if neighbors: #Permet de vérifier s'il a des neighbors murs, miskin s'il en a pas, lol
                 nx, ny = random.choice(neighbors) #C assez explicite je pense
@@ -35,7 +45,9 @@ class Maze:
             else:
                 to_explore.pop() #enlève le dernier élément de la liste a explorer et refait si aucun voisin mur
         
-        #Mettre une bordure 
+        """
+        Mettre une bordure
+        """
         for i in range(self.width):
             self.maze[0][i] = '#'
             self.maze[self.height - 1][i] = '#'
@@ -43,7 +55,9 @@ class Maze:
             self.maze[i][0] = '#'
             self.maze[i][self.width - 1] = '#'
     
-        #Mettre l'arrivée (A)
+        """
+        Mettre l'arrivée (A)
+        """
         end_x = random.randrange(1, self.width, 2)
         end_y = random.randrange(1, self.height, 2)
         while self.maze[end_y][end_x] != ' ': #Pour ne pas avoir l'arrivée sur un mur, ca serait balo. Mais plutôt sur un des chemins qu'on a crée plus tôt
@@ -52,7 +66,9 @@ class Maze:
         self.maze[end_y][end_x] = 'A' #Marqué l'arrivée
 
     def display(self):
-        # Affiche le laby
+        """
+        Affiche le laby
+        """
         for ligne in self.maze:
           print(''.join(ligne))
 
