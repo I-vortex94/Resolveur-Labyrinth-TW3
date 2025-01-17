@@ -6,7 +6,7 @@ class MazeGenerator:
     """
     Génère un labyrinthe complet, avec un départ et une arrivée
     """
-    def __init__(self, width: int, height; int) -> None:
+    def __init__(self, width: int, height: int) -> None:
         """
         Génère matrice de mur
         """
@@ -16,8 +16,11 @@ class MazeGenerator:
             height += 1
         self.width: int = width #longeur du laby
         self.height: int = height #hauteur du laby
+        
+        # Initialisation de la matrice du labyrinthe avec des murs (False)
+        self.maze: List[List[bool]] = [[False for _ in range(self.width)] for _ in range(self.height)]
 
-    def generate(self) -> Tuple[List[List[bool]]], Tuple[Coord, Coord]: #Pour faire le laby
+    def generate(self) -> Tuple[List[List[bool]], Tuple[Coord, Coord]]: #Pour faire le laby
         """
         Placer le départ (D)
         """
@@ -26,7 +29,7 @@ class MazeGenerator:
 
         start_x: int = random.randrange(1, self.width - 1, 2) # 2 pour s'assurer qu'il ne tombe pas sur un bord
         start_y: int = random.randrange(1, self.height - 1, 2) # 2 pour s'assurer qu'il ne tombe pas sur un bord
-        self.maze[start_y][start_x] = True #Place le départ sur le laby : True
+        self.maze[start_y][start_x] = True #Place le départ sur le laby
     
         #On défini les directions possibles pour les neighbors (haut, bas, gauche, droite)
         directions: List[Coord] = [(-2, 0), (2, 0), (0, -2), (0, 2)]
@@ -43,13 +46,13 @@ class MazeGenerator:
             for dx, dy in directions:
                 nx, ny = x + dx, y + dy
                 if 1 <= nx < self.width - 1 and 1 <= ny < self.height - 1: #Sécurité pour vérif qu'on est bien dans les bordures et que c bien un mur
-                    if self.maze[ny][nx] == '#': 
+                    if not self.maze[ny][nx]: 
                         neighbors.append((nx, ny))
 
             if neighbors: #Permet de vérifier s'il a des neighbors murs, miskin s'il en a pas, lol
                 nx, ny = random.choice(neighbors) #C assez explicite je pense
-                self.maze[ny][nx] = ' ' #Transformer le mur en passage
-                self.maze[(y + ny) // 2][(x + nx) // 2] = ' ' #Lier la cellule avec la voisine choisit, bah oui on comptait de 2 en 2...
+                self.maze[ny][nx] = True #Transformer le mur en passage
+                self.maze[(y + ny) // 2][(x + nx) // 2] = True #Lier la cellule avec la voisine choisit, bah oui on comptait de 2 en 2...
                 to_explore.append((nx, ny))
             else:
                 to_explore.pop() #enlève le dernier élément de la liste a explorer et refait si aucun voisin mur
@@ -58,33 +61,44 @@ class MazeGenerator:
         Mettre une bordure
         """
         for i in range(self.width):
-            self.maze[0][i] = '#'
-            self.maze[self.height - 1][i] = '#'
+            self.maze[0][i] = True
+            self.maze[self.height - 1][i] = True
         for i in range(self.height):
-            self.maze[i][0] = '#'
-            self.maze[i][self.width - 1] = '#'
+            self.maze[i][0] = True
+            self.maze[i][self.width - 1] = True
     
         """
         Mettre l'arrivée (A)
         """
         end_x: int = random.randrange(1, self.width, 2)
         end_y: int = random.randrange(1, self.height, 2)
-        while self.maze[end_y][end_x] != ' ': #Pour ne pas avoir l'arrivée sur un mur, ca serait balo. Mais plutôt sur un des chemins qu'on a crée plus tôt
+        while self.maze[end_y][end_x]: #Pour ne pas avoir l'arrivée sur un mur, ca serait balo. Mais plutôt sur un des chemins qu'on a crée plus tôt
             end_x = random.randrange(1, self.width, 2)
             end_y = random.randrange(1, self.height, 2)
-        self.maze[end_y][end_x] = 'A' #Marqué l'arrivée
+        self.maze[end_y][end_x] = True #Marquer l'arrivée
 
-    def display(self, maze: List[List[bool]]) -> None:
+        return self.maze, (start_x, start_y), (end_x, end_y)
+
+    def display(self) -> None:
         """
         Affiche le laby
         """
-        for row in maze:
-          print(''.join(['#' if not cell esle ' ' for cell in row))
+        for row in self.maze:
+          print(''.join(['#' if not cell else ' ' for cell in row]))
 
-width: int = 31 #Mettre des nombres impaires
-height: int = 41 #Mettre des nombres impaires
+width: int = 31
+height: int = 41
 # (Parce que ça fait 3141 : 3,141)
+
+# Créer une instance du générateur de labyrinthe
 maze = MazeGenerator(width, height)
 
-maze.generate()
+# Générer le labyrinthe et récupérer les informations
+maze_data, start, end = maze.generate()
+
+# Afficher le labyrinthe
 maze.display()
+
+# Afficher les coordonnées de départ et d'arrivée
+print(f"Départ: {start}")
+print(f"Arrivée: {end}")
